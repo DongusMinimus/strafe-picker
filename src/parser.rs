@@ -1,17 +1,5 @@
-// Copyright 2014-2017 The html5ever Project Developers. See the
-// COPYRIGHT file at the top-level directory of this distribution.
-//
-// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
-// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
-// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
-// option. This file may not be copied, modified, or distributed
-// except according to those terms.
-
-//#[macro_use]
-//extern crate html5ever;
-
 use std::default::Default;
-use std::fs::{File};
+use std::fs::{OpenOptions};
 use std::string::String;
 use std::collections::HashMap;
 
@@ -69,11 +57,17 @@ fn walk(handle: &Handle, hm:&mut HashMap<String,f32>, print: bool, _name:&mut St
     }
 }
 
-pub fn parse(file:&mut File) -> HashMap<String,f32>{
+pub fn parse() -> HashMap<String,f32>{
+    
+    let mut file = OpenOptions::new()
+        .write(true)
+        .read(true)
+        .create(true)
+        .open("data.html").unwrap(); 
     
     let dom = parse_document(RcDom::default(), Default::default())
         .from_utf8()
-        .read_from(file)
+        .read_from(&mut file)
         .unwrap();
 
     let mut hm = HashMap::new();
